@@ -18,7 +18,14 @@ namespace CoffeeShopApi {
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    var configuration = new ConfigurationBuilder()
+                                            .AddCommandLine(args)
+                                            .Build();
+                    var hostUrl = configuration["hosturl"];
+                    if (string.IsNullOrEmpty(hostUrl))
+                        hostUrl = "http://0.0.0.0:6000";
+
+                    webBuilder.UseStartup<Startup>().UseUrls(hostUrl);
                 });
     }
 }

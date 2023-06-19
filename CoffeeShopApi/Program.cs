@@ -25,7 +25,7 @@ namespace CoffeeShopApi {
                     if (string.IsNullOrEmpty(hostUrl))
                         hostUrl = "http://0.0.0.0:6000";
 
-                    webBuilder.UseStartup<Startup>().UseUrls(hostUrl);
+                    webBuilder.UseStartup<Startup>();//.UseUrls(hostUrl);
                 });
     }
 }

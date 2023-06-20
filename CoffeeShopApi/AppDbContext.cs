@@ -13,7 +13,6 @@ namespace CoffeeShopApi {
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseInMemoryDatabase("CoffeeShop");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

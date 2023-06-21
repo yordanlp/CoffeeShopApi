@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CoffeeShopApi;
 using CoffeeShopApi.Models;
+using Amazon.SQS;
+using Amazon.SQS.Model;
+using Microsoft.Extensions.Configuration;
 
 namespace CoffeeShopApi.Controllers
 {
@@ -15,10 +18,15 @@ namespace CoffeeShopApi.Controllers
     public class UserController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IAmazonSQS _sqsClient;
+        private readonly IConfiguration _configuration;
 
-        public UserController(AppDbContext context)
+        public UserController(AppDbContext context, IAmazonSQS sqsClient, IConfiguration config )
         {
             _context = context;
+            _sqsClient = sqsClient;
+            _configuration = config;
+
         }
 
         [HttpGet]
@@ -74,6 +82,13 @@ namespace CoffeeShopApi.Controllers
         {
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
+
+            var sendMessageRequest = new SendMessageRequest
+            {
+                QueueUrl = _configuration.GetValue<string>("QueueUrl"), // replace with your queue URL
+                MessageBody = "A new user has been created with ID " + user.Id
+            };
+            await _sqsClient.SendMessageAsync(sendMessageRequest);
 
             return CreatedAtAction("GetUser", new { id = user.Id }, user);
         }

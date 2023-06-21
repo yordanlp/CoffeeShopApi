@@ -1,3 +1,4 @@
+using Amazon.SQS;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -51,6 +52,11 @@ namespace CoffeeShopApi {
             });
             services.AddDbContext<AppDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
+            services.AddAWSService<IAmazonSQS>();
+
+            services.AddHostedService<SqsPollingService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

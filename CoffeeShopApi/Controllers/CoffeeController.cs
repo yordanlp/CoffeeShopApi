@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using CoffeeShopApi;
 using CoffeeShopApi.Models;
 using System.Text;
+using CoffeeShopApi.ActionFilters;
 
 namespace CoffeeShopApi.Controllers
 {
@@ -50,6 +51,7 @@ namespace CoffeeShopApi.Controllers
         }
 
         [HttpGet("favourite/leaderboard")]
+        [RateLimit(3, 1, RateLimitType.USER)]
         public async Task<ActionResult<Object>> LeaderBoard()
         {
             var leaderboard = await GetLeaderBoard();
@@ -57,6 +59,7 @@ namespace CoffeeShopApi.Controllers
             return new { data = new { top3 = leaderboard.Select(coffee => coffee.Name).ToArray() } };
         }
 
+        [RateLimit(10, 1, RateLimitType.IP)]
         [HttpPost("favourite")]
         public async Task<ActionResult<Object>> SetFavourite( [FromBody]int coffeeId )
         {

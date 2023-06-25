@@ -25,5 +25,6 @@ namespace CoffeeShopApi {
 
         public DbSet<User> Users { get; set; }
         public DbSet<Coffee> Coffees { get; set; }
+        public DbSet<RequestPerKey> RequestsPerKey { get; set; }
     }
 }
